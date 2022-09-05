@@ -1,0 +1,11 @@
+[[protocols]]
+name = "Acer TV"
+protocol = "nec"
+variant = "necx"
+
+[protocols.scancodes]
+0x616304 = "KEY_VOLUMEUP"
+0x616305 = "KEY_VOLUMEDOWN"
+0x61631e = "KEY_MUTE"
+0x61630c = "KEY_TV"
+0x61633d  = "KEY_BLUE"
