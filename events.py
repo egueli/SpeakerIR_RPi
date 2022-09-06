@@ -16,7 +16,7 @@ def change_volume(amount):
 	res = conn.getresponse()
 	res_body = res.read()
 	yxc_status = json.loads(res_body)
-	repr(yxc_status)
+	print(repr(yxc_status))
 
 def on_vol_up():
 	change_volume(1)
