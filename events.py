@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import evdev
 
 device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
