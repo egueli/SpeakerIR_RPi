@@ -45,7 +45,7 @@ def on_blue():
 
 device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
 
-def process_event():
+def process_event(event):
 	if event.type != ecodes.EV_KEY:
 		return
 
