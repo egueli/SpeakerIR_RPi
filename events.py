@@ -6,6 +6,7 @@ import evdev
 from evdev import ecodes, KeyEvent
 import http.client
 import json
+import traceback
 
 conn = http.client.HTTPConnection("192.168.0.106")
 
@@ -44,12 +45,12 @@ def on_blue():
 
 device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
 
-for event in device.read_loop():
+def process_event():
 	if event.type != ecodes.EV_KEY:
-		continue
+		return
 
 	if event.value not in [KeyEvent.key_down, KeyEvent.key_hold]:
-		continue
+		return
 
 	if event.code == ecodes.KEY_VOLUMEUP:
 		on_vol_up()
@@ -62,3 +63,9 @@ for event in device.read_loop():
 	elif event.code == ecodes.KEY_BLUE:
 		on_blue()
 		# print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
+
+for event in device.read_loop():
+	try:
+		process_event(event)
+	except Exception:
+		print(traceback.format_exc())
