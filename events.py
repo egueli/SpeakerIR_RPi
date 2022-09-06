@@ -11,18 +11,28 @@ import json
 
 conn = http.client.HTTPConnection("192.168.0.106")
 
-def change_volume(amount):
+def get_volume():
 	conn.request("GET", "/YamahaExtendedControl/v1/main/getStatus")
+	res = conn.getresponse()
+	res_body = res.read()
+	yxc_status = json.loads(res_body)
+	return yxc_status['volume']
+
+def set_volume(volume):
+	conn.request("GET", f"/YamahaExtendedControl/v1/main/setVolume?volume={volume}")
 	res = conn.getresponse()
 	res_body = res.read()
 	yxc_status = json.loads(res_body)
 	print(repr(yxc_status))
 
+def change_volume(amount):
+	set_volume(get_volume() + amount)
+
 def on_vol_up():
-	change_volume(1)
+	change_volume(2)
 
 def on_vol_down():
-	change_volume(-1)
+	change_volume(-2)
 
 def on_mute():
 	pass
