@@ -1,9 +1,9 @@
 import evdev
 
 device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
+
 for event in device.read_loop():
-	print(repr(event))
 	if event.type == evdev.ecodes.EV_KEY:
-		print(repr(evdev.events.KeyEvent(event)))
+		print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
 
 
