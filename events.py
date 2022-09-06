@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
-# Configure with:
-# ir-keytable -D 100 -P 100
-# sudo ir-keytable --write=acer.toml
+# Run setup_ir.sh with root priviledges before running this.
 
 import evdev
 from evdev import ecodes, KeyEvent
