@@ -24,7 +24,7 @@ def set_volume(volume):
 	yxc_status = json.loads(res_body)
 	response_code = yxc_status['response_code']
 	if response_code != 0:
-		raise Exception("non-zero response code")
+		raise Exception(f"non-zero response code, got {response_code}")
 
 def change_volume(amount):
 	set_volume(get_volume() + amount)
