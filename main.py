@@ -1,28 +1,73 @@
+#!/usr/bin/python3
+
+# Run setup_ir.sh with root priviledges before running this.
+
+import evdev
+from evdev import ecodes, KeyEvent
 import http.client
-import time
+import json
+import traceback
 
 conn = http.client.HTTPConnection("192.168.0.106")
 
-total_duration = 0
-num_samples = 50
-
-for i in range(0, num_samples):
-	print(i)
-	start_at = time.time()
-	if i % 2 == 0:
-		conn.request("GET", "/YamahaExtendedControl/v1/main/getStatus")
-	else:
-		conn.request("GET", "/YamahaExtendedControl/v1/main/setVolume?volume=101")
-
+def get_volume():
+	conn.request("GET", "/YamahaExtendedControl/v1/main/getStatus")
 	res = conn.getresponse()
-	json = res.read()
-	
-	end_at = time.time()
-	duration = end_at - start_at
-	total_duration = total_duration + duration
+	res_body = res.read()
+	yxc_status = json.loads(res_body)
+	return yxc_status['volume']
 
-	print(f"duration: {duration*1000}ms")
+def set_volume(volume):
+	conn.request("GET", f"/YamahaExtendedControl/v1/main/setVolume?volume={volume}")
+	res = conn.getresponse()
+	res_body = res.read()
+	yxc_status = json.loads(res_body)
+	response_code = yxc_status['response_code']
+	if response_code != 0:
+		raise Exception(f"non-zero response code, got {response_code}")
 
-print(f"average: {total_duration*1000/num_samples}ms")
+def change_volume(amount):
+	set_volume(get_volume() + amount)
+
+def on_vol_up():
+	change_volume(2)
+
+def on_vol_down():
+	change_volume(-2)
+
+def on_mute():
+	pass
+
+def on_tv():
+	pass
+
+def on_blue():
+	pass
 
 
+device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
+
+def process_event(event):
+	if event.type != ecodes.EV_KEY:
+		return
+
+	if event.value not in [KeyEvent.key_down, KeyEvent.key_hold]:
+		return
+
+	if event.code == ecodes.KEY_VOLUMEUP:
+		on_vol_up()
+	elif event.code == ecodes.KEY_VOLUMEDOWN:
+		on_vol_down()
+	elif event.code == ecodes.KEY_MUTE:
+		on_mute()
+	elif event.code == ecodes.KEY_TV:
+		on_tv()
+	elif event.code == ecodes.KEY_BLUE:
+		on_blue()
+		# print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
+
+for event in device.read_loop():
+	try:
+		process_event(event)
+	except Exception:
+		print(traceback.format_exc())
