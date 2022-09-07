@@ -22,7 +22,9 @@ def set_volume(volume):
 	res = conn.getresponse()
 	res_body = res.read()
 	yxc_status = json.loads(res_body)
-	print(repr(yxc_status))
+	response_code = yxc_status['response_code']
+	if response_code != 0:
+		raise Exception("non-zero response code")
 
 def change_volume(amount):
 	set_volume(get_volume() + amount)
