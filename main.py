@@ -7,6 +7,7 @@ from evdev import ecodes, KeyEvent
 import http.client
 import json
 import traceback
+import asyncio
 
 conn = http.client.HTTPConnection("192.168.0.106")
 
@@ -66,8 +67,13 @@ def process_event(event):
 		on_blue()
 		# print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
 
-for event in device.read_loop():
-	try:
-		process_event(event)
-	except Exception:
-		print(traceback.format_exc())
+async def ir_event_loop():
+	for event in device.read_loop():
+		try:
+			process_event(event)
+		except Exception:
+			print(traceback.format_exc())
+
+asyncio.ensure_future(ir_event_loop())
+loop = asyncio.get_event_loop()
+loop.run_forever()
