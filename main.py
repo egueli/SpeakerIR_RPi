@@ -70,7 +70,7 @@ def process_event(event):
 
 async def main():
 	d = Display()
-	ir_event_loop()
+	await ir_event_loop()
 
 async def ir_event_loop():
 	for event in device.read_loop():
