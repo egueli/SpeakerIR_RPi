@@ -21,7 +21,7 @@ class Display:
             self._current.cancel()
 
         self._show(text)
-        self._current = asyncio.ensure_future(self._post_blank())
+        self._current = asyncio.create_task(self._post_blank())
 
 
 async def main():
@@ -33,4 +33,6 @@ async def main():
     await asyncio.sleep(10)
 
 
-asyncio.run(main())
+asyncio.ensure_future(main())
+loop = asyncio.get_event_loop()
+loop.run_forever()

@@ -26,7 +26,7 @@ class Display():
             self._current.cancel()
 
         self._show_segments(text)
-        self._current = asyncio.ensure_future(self._post_blank(duration))
+        self._current = asyncio.create_task(self._post_blank(duration))
 
     async def _post_blank(self, duration):
         await asyncio.sleep(duration)
