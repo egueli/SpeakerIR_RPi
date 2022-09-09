@@ -9,7 +9,7 @@ class Display():
         self._tm = tm1637.TM1637(clk=CLK, dio=DIO)
         self._current: asyncio.Task = None
 
-        self._show_temporary(" Hi ", 1.5)
+        self._show_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000], 1.5)
 
     def show_ir(self):
         pass
@@ -25,7 +25,7 @@ class Display():
             self._current.cancel()
 
         self._show(text)
-        self._current = asyncio.ensure_future(self._post_blank())
+        self._current = asyncio.ensure_future(self._post_blank(duration))
 
     async def _post_blank(self, duration):
         await asyncio.sleep(duration)
