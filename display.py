@@ -32,7 +32,7 @@ class Display():
         self._blank()
 
     def _show(self, text):
-        self.tm.show(text)
+        self._tm.show(text)
 
     def _blank(self):
-        self.tm.show('    ')
+        self._tm.show('    ')
