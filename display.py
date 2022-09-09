@@ -6,6 +6,7 @@ DIO = 14
 
 class Display():
     def __init__(self):
+        print("display start")
         self._tm = tm1637.TM1637(clk=CLK, dio=DIO)
         self._current: asyncio.Task = None
 
@@ -32,7 +33,9 @@ class Display():
         self._blank()
 
     def _show_segments(self, text):
+        print("display show segments")
         self._tm.write(text)
 
     def _blank(self):
+        print("display blank")
         self._tm.show('    ')
