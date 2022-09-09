@@ -73,7 +73,7 @@ async def main():
 	await ir_event_loop()
 
 async def ir_event_loop():
-	for event in device.read_loop():
+	for event in device.async_read_loop():
 		try:
 			process_event(event)
 		except Exception:
