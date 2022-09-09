@@ -8,6 +8,7 @@ import http.client
 import json
 import traceback
 import asyncio
+from display import Display
 
 conn = http.client.HTTPConnection("192.168.0.106")
 
@@ -67,6 +68,10 @@ def process_event(event):
 		on_blue()
 		# print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
 
+async def main():
+	d = Display()
+	ir_event_loop()
+
 async def ir_event_loop():
 	for event in device.read_loop():
 		try:
@@ -74,6 +79,6 @@ async def ir_event_loop():
 		except Exception:
 			print(traceback.format_exc())
 
-asyncio.ensure_future(ir_event_loop())
+asyncio.ensure_future(main())
 loop = asyncio.get_event_loop()
 loop.run_forever()
