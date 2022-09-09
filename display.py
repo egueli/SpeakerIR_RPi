@@ -5,7 +5,7 @@ CLK = 15
 DIO = 14
 
 class Display():
-    async def __init__(self):
+    def __init__(self):
         self._tm = tm1637.TM1637(clk=CLK, dio=DIO)
         self._current: asyncio.Task = None
 
