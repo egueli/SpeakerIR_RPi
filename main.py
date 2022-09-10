@@ -17,10 +17,10 @@ class Application:
 		self._display = Display()
 
 	async def run(self):
-		await self._display.show_welcome()
-		await self.ir_event_loop()
+		self._display.show_welcome()
+		await self._ir_event_loop()
 
-	async def _get_volume(self):
+	def _get_volume(self):
 		self._conn.request("GET", "/YamahaExtendedControl/v1/main/getStatus")
 		res = self._conn.getresponse()
 		res_body = res.read()
@@ -54,7 +54,7 @@ class Application:
 	def _on_blue(self):
 		pass
 
-	def process_event(self, event):
+	def _process_event(self, event):
 		if event.type != ecodes.EV_KEY:
 			return
 
@@ -82,8 +82,12 @@ class Application:
 			except Exception:
 				print(traceback.format_exc())
 
-if __file__ == "__main__":
+if __name__ == "__main__":
+	print("SpeakerIR starting")
 	app = Application()
+	print("app initialized")
 	asyncio.ensure_future(app.run())
 	loop = asyncio.get_event_loop()
+	print("now running event loop")
 	loop.run_forever()
+	print("app has stopped. Thank you for playing Wing Commander!")
