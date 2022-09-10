@@ -2,24 +2,32 @@
 
 # Run setup_ir.sh with root priviledges before running this.
 
-import evdev
-from evdev import ecodes, KeyEvent
 import http.client
 import json
 import traceback
 import asyncio
 from display import Display
 import time
+from commands import *
+from ir import *
 
 class Application:
 	def __init__(self):
 		self._conn = http.client.HTTPConnection("192.168.0.106")
-		self._device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
 		self._display = Display()
+		self._ir = IRCommandSource()
 
 	async def run(self):
 		self._display.show_welcome()
-		await self._ir_event_loop()
+		async for command in self._ir.get_commands():
+			if not command: continue
+
+			try:
+				self._display.show_ir()
+				if command is VolumeUp:
+					elapsed(lambda: self._change_volume(2))
+			except Exception:
+				print(traceback.format_exc())
 
 	def _get_volume(self):
 		self._conn.request("GET", "/YamahaExtendedControl/v1/main/getStatus")
@@ -44,9 +52,6 @@ class Application:
 		self._set_volume(new_volume)
 		self._display.show_volume_set(new_volume)
 
-	def _on_vol_up(self):
-		elapsed(lambda: self._change_volume(2))
-
 	def _on_vol_down(self):
 		elapsed(lambda: self._change_volume(-2))
 
@@ -58,35 +63,6 @@ class Application:
 
 	def _on_blue(self):
 		pass
-
-	async def _ir_event_loop(self):
-		async for event in self._device.async_read_loop():
-			try:
-				self._process_event(event)
-			except Exception:
-				print(traceback.format_exc())
-
-	def _process_event(self, event):
-		print("New event: " + str(evdev.categorize(event)))
-		if event.type != ecodes.EV_KEY:
-			return
-
-		if event.value not in [KeyEvent.key_down, KeyEvent.key_hold]:
-			return
-
-		self._display.show_ir()
-
-		if event.code == ecodes.KEY_VOLUMEUP:
-			self._on_vol_up()
-		elif event.code == ecodes.KEY_VOLUMEDOWN:
-			self._on_vol_down()
-		elif event.code == ecodes.KEY_MUTE:
-			self._on_mute()
-		elif event.code == ecodes.KEY_TV:
-			self._on_tv()
-		elif event.code == ecodes.KEY_BLUE:
-			self._on_blue()
-			# print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
 
 def elapsed(func):
 	start_at = time.time()
