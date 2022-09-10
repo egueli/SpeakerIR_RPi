@@ -1,8 +1,8 @@
 import asyncio
 import tm1637
 
-CLK = 15
-DIO = 14
+CLK = 27
+DIO = 17
 
 class Display():
     def __init__(self):
