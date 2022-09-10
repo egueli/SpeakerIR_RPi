@@ -24,8 +24,9 @@ class Application:
 
 			try:
 				self._display.show_ir()
-				if command is VolumeUp:
-					elapsed(lambda: self._change_volume(2))
+				print(repr(command))
+				# if command is VolumeUp:
+				# 	elapsed(lambda: self._change_volume(2))
 			except Exception:
 				print(traceback.format_exc())
 
