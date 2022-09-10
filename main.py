@@ -9,6 +9,7 @@ import json
 import traceback
 import asyncio
 from display import Display
+import time
 
 class Application:
 	def __init__(self):
@@ -40,10 +41,10 @@ class Application:
 		self._set_volume(self._get_volume() + amount)
 
 	def _on_vol_up(self):
-		self._change_volume(2)
+		elapsed(lambda: self._change_volume(2))
 
 	def _on_vol_down(self):
-		self._change_volume(-2)
+		elapsed(lambda: self._change_volume(-2))
 
 	def _on_mute(self):
 		pass
@@ -81,6 +82,13 @@ class Application:
 				self._process_event(event)
 			except Exception:
 				print(traceback.format_exc())
+
+def elapsed(func):
+	start_at = time.time()
+	func()
+	end_at = time.time()
+	duration = end_at - start_at
+	print(f"duration: {duration*1000}ms")
 
 if __name__ == "__main__":
 	print("SpeakerIR starting")
