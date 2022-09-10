@@ -9,10 +9,13 @@ class Display():
         print("display start")
         self._tm = tm1637.TM1637(clk=CLK, dio=DIO)
         self._current: asyncio.Task = None
+        self._duration = 1.5
 
-        self._show_segments_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000], 1.5)
+    def show_welcome(self):
+        self._show_segments_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000])
 
     def show_ir(self):
+        self._show_segments_temporary([0b00000000, 0b10000000, 0b00000000, 0b00000000])
         pass
 
     def show_volume(self, volume):
@@ -21,7 +24,10 @@ class Display():
     def show_volume_set(self, volume):
         pass
 
-    def _show_segments_temporary(self, text, duration):
+    def _show_segments_temporary(self, text, duration = None):
+        if not duration:
+            duration = self._duration
+            
         if self._current:
             self._current.cancel()
 
