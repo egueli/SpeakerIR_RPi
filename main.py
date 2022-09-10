@@ -67,6 +67,7 @@ class Application:
 				print(traceback.format_exc())
 
 	def _process_event(self, event):
+		print("New event: " + str(evdev.categorize(event)))
 		if event.type != ecodes.EV_KEY:
 			return
 
