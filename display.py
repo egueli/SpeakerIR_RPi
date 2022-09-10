@@ -12,36 +12,45 @@ class Display():
         self._duration = 1.5
 
     def show_welcome(self):
-        self._show_segments_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000])
+        self._show_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000])
 
     def show_ir(self):
-        self._show_segments_temporary([0b00000000, 0b10000000, 0b00000000, 0b00000000])
+        self._show_temporary([0b00000000, 0b10000000, 0b00000000, 0b00000000])
         pass
 
     def show_volume(self, volume):
+        self._show_temporary(self._text("%3d " % volume))
         pass
 
     def show_volume_set(self, volume):
         pass
 
-    def _show_segments_temporary(self, text, duration = None):
+    def _text(self, text):
+        return self._tm.encode_string(text)
+
+    def _show_temporary(self, segments, duration = None):
         if not duration:
             duration = self._duration
             
         if self._current:
             self._current.cancel()
 
-        self._show_segments(text)
+        self._show_segments(segments)
         self._current = asyncio.create_task(self._post_blank(duration))
 
     async def _post_blank(self, duration):
         await asyncio.sleep(duration)
         self._blank()
 
-    def _show_segments(self, text):
+    def _show_segments(self, segments):
         print("display show segments")
-        self._tm.write(text)
+        self._tm.write(segments)
 
     def _blank(self):
         print("display blank")
         self._tm.show('    ')
+
+
+if __name__ == "__main__":
+    d = Display()
+    d.show_volume(85)
