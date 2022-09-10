@@ -59,6 +59,13 @@ class Application:
 	def _on_blue(self):
 		pass
 
+	async def _ir_event_loop(self):
+		async for event in self._device.async_read_loop():
+			try:
+				self._process_event(event)
+			except Exception:
+				print(traceback.format_exc())
+
 	def _process_event(self, event):
 		if event.type != ecodes.EV_KEY:
 			return
@@ -79,13 +86,6 @@ class Application:
 		elif event.code == ecodes.KEY_BLUE:
 			self._on_blue()
 			# print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
-
-	async def _ir_event_loop(self):
-		async for event in self._device.async_read_loop():
-			try:
-				self._process_event(event)
-			except Exception:
-				print(traceback.format_exc())
 
 def elapsed(func):
 	start_at = time.time()
