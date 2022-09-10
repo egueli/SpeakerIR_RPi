@@ -16,24 +16,27 @@ class IRCommandSource:
         if event.type != ecodes.EV_KEY:
             return None
 
-        if event.value not in [KeyEvent.key_down, KeyEvent.key_hold]:
+        is_hold = event.value == KeyEvent.key_hold
+        is_down = event.value == KeyEvent.key_down
+        
+        if not is_hold and not is_down:
             return None
 
         if event.code == ecodes.KEY_VOLUMEUP:
             return VolumeUp()
         elif event.code == ecodes.KEY_VOLUMEDOWN:
-            return None # TODO
-        elif event.code == ecodes.KEY_MUTE:
-            return None # TODO
-        elif event.code == ecodes.KEY_TV:
-            return None # TODO
-        elif event.code == ecodes.KEY_BLUE:
-            return None # TODO
-            # print("time %15f type %3d code %3d value %d" % (event.timestamp(), event.type, event.code, event.value))
+            return VolumeDown()
+        elif not is_hold and event.code == ecodes.KEY_MUTE:
+            return Mute()
+        elif not is_hold and event.code == ecodes.KEY_TV:
+            return SetInput()
+        elif not is_hold and event.code == ecodes.KEY_BLUE:
+            return ToggleClock()
 
 async def test_run():
     ir = IRCommandSource()
     async for command in ir.get_commands():
+        if not command: continue
         print(repr(command))
 
 if __name__ == "__main__":
