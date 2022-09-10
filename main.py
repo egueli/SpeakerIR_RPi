@@ -38,7 +38,11 @@ class Application:
 			raise Exception(f"non-zero response code, got {response_code}")
 
 	def _change_volume(self, amount):
-		self._set_volume(self._get_volume() + amount)
+		current_volume = self._get_volume()
+		self._display.show_volume(current_volume)
+		new_volume = current_volume + amount
+		self._set_volume(new_volume)
+		self._display.show_volume_set(new_volume)
 
 	def _on_vol_up(self):
 		elapsed(lambda: self._change_volume(2))
