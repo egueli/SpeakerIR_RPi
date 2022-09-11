@@ -28,11 +28,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from time import sleep
+import time
 
-from wiringpi import wiringPiSetupGpio, pinMode, digitalRead, digitalWrite, GPIO
-
-wiringPiSetupGpio()
+import gpiozero
 
 TM1637_CMD1 = 0x40  # 0x40 data command
 TM1637_CMD2 = 0xc0  # 0xC0 address command
@@ -50,30 +48,25 @@ _SEGMENTS = bytearray(
 class TM1637(object):
     """Library for quad 7-segment LED modules based on the TM1637 LED driver."""
 
-    def __init__(self, clk, dio, brightness=7):
-        self.clk = clk
-        self.dio = dio
-
+    def __init__(self, clk, dio, brightness=7, pin_factory=None):
         if not 0 <= brightness <= 7:
             raise ValueError("Brightness out of range")
         self._brightness = brightness
 
-        pinMode(self.clk, GPIO.OUTPUT)
-        pinMode(self.dio, GPIO.OUTPUT)
-        digitalWrite(self.clk, 0)
-        digitalWrite(self.dio, 0)
+        self.clk = gpiozero.OutputDevice(clk, active_high=True, pin_factory=pin_factory, initial_value=False)
+        self.dio = gpiozero.OutputDevice(dio, active_high=True, pin_factory=pin_factory, initial_value=False)
 
     def _start(self):
-        digitalWrite(self.clk, GPIO.HIGH)
-        digitalWrite(self.dio, GPIO.HIGH)
-        digitalWrite(self.dio, GPIO.LOW)
-        digitalWrite(self.clk, GPIO.LOW)
+        self.clk.on()
+        self.dio.on()
+        self.dio.off()
+        self.clk.off()
 
     def _stop(self):
-        digitalWrite(self.clk, GPIO.LOW)
-        digitalWrite(self.dio, GPIO.LOW)
-        digitalWrite(self.clk, GPIO.HIGH)
-        digitalWrite(self.dio, GPIO.HIGH)
+        self.clk.off()
+        self.dio.off()
+        self.clk.on()
+        self.dio.on()
 
     def _write_data_cmd(self):
         # automatic address increment, normal mode
@@ -89,18 +82,21 @@ class TM1637(object):
 
     def _write_byte(self, b):
         for i in range(8):
-            digitalWrite(self.dio,(b >> i) & 1)
-            sleep(TM1637_DELAY)
-            digitalWrite(self.clk, GPIO.HIGH)
-            sleep(TM1637_DELAY)
-            digitalWrite(self.clk, GPIO.LOW)
-            sleep(TM1637_DELAY)
+            if (b >> i) & 1:
+                self.dio.on()
+            else:
+                self.dio.off()
+            time.sleep(TM1637_DELAY)
+            self.clk.on()
+            time.sleep(TM1637_DELAY)
+            self.clk.off()
+            time.sleep(TM1637_DELAY)
 
-        digitalWrite(self.clk, GPIO.LOW)
-        sleep(TM1637_DELAY)
-        digitalWrite(self.clk, GPIO.HIGH)
-        sleep(TM1637_DELAY)
-        digitalWrite(self.clk, GPIO.LOW)
+        self.clk.off()
+        time.sleep(TM1637_DELAY)
+        self.clk.on()
+        time.sleep(TM1637_DELAY)
+        self.clk.off()
 
     def brightness(self, val=None):
         """Set the display brightness 0-7."""
@@ -237,7 +233,7 @@ class TM1637(object):
         data[4:0] = list(segments)
         for i in range(len(segments) + 5):
             self.write(data[0 + i:4 + i])
-            sleep(delay / 1000)
+            time.sleep(delay / 1000)
 
 
 class TM1637Decimal(TM1637):
