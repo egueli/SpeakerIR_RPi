@@ -2,20 +2,19 @@
 
 # Run setup_ir.sh with root priviledges before running this.
 
-import http.client
-import json
 import traceback
 import asyncio
 from display import Display
 import time
 from commands import *
 from ir import *
+from musiccast import *
 
 class Application:
 	def __init__(self):
-		self._conn = http.client.HTTPConnection("192.168.0.106")
 		self._display = Display()
 		self._ir = IRCommandSource()
+		self._musiccast = MusicCast()
 
 	async def run(self):
 		self._display.show_welcome()
@@ -32,29 +31,12 @@ class Application:
 			except Exception:
 				print(traceback.format_exc())
 
-	def _get_volume(self):
-		yxc_status = self._do_yxc_request(f"getStatus")
-		return yxc_status['volume']
-
-	def _set_volume(self, volume):
-		self._do_yxc_request(f"setVolume?volume={volume}")
-
-	def _do_yxc_request(self, query):
-		self._conn.request("GET", f"/YamahaExtendedControl/v1/main/{query}")
-		res = self._conn.getresponse()
-		res_body = res.read()
-		yxc_status = json.loads(res_body)
-		response_code = yxc_status['response_code']
-		if response_code != 0:
-			raise Exception(f"expected non-zero response code, got {response_code}")
-		return yxc_status
-
 	def _change_volume(self, amount):
-		current_volume = self._get_volume()
+		current_volume = self._musiccast.get_volume()
 		self._display.show_volume(current_volume)
 		new_volume = current_volume + amount
 		print(f"volume: {current_volume} => {new_volume}")
-		self._set_volume(new_volume)
+		self._musiccast.set_volume(new_volume)
 		self._display.show_volume_set(new_volume)
 
 	def _on_mute(self):
