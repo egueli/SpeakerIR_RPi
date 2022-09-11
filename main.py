@@ -33,20 +33,21 @@ class Application:
 				print(traceback.format_exc())
 
 	def _get_volume(self):
-		self._conn.request("GET", "/YamahaExtendedControl/v1/main/getStatus")
-		res = self._conn.getresponse()
-		res_body = res.read()
-		yxc_status = json.loads(res_body)
+		yxc_status = self._do_yxc_request(f"getStatus")
 		return yxc_status['volume']
 
 	def _set_volume(self, volume):
-		self._conn.request("GET", f"/YamahaExtendedControl/v1/main/setVolume?volume={volume}")
+		self._do_yxc_request(f"setVolume?volume={volume}")
+
+	def _do_yxc_request(self, query):
+		self._conn.request("GET", f"/YamahaExtendedControl/v1/main/{query}")
 		res = self._conn.getresponse()
 		res_body = res.read()
 		yxc_status = json.loads(res_body)
 		response_code = yxc_status['response_code']
 		if response_code != 0:
-			raise Exception(f"non-zero response code, got {response_code}")
+			raise Exception(f"expected non-zero response code, got {response_code}")
+		return yxc_status
 
 	def _change_volume(self, amount):
 		current_volume = self._get_volume()
