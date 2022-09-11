@@ -25,8 +25,10 @@ class Application:
 			try:
 				self._display.show_ir()
 				print(repr(command))
-				# if command is VolumeUp:
-				# 	elapsed(lambda: self._change_volume(2))
+				if isinstance(command, VolumeUp):
+					elapsed(lambda: self._change_volume(2))
+				if isinstance(command, VolumeDown):
+					elapsed(lambda: self._change_volume(-2))
 			except Exception:
 				print(traceback.format_exc())
 
@@ -50,6 +52,7 @@ class Application:
 		current_volume = self._get_volume()
 		self._display.show_volume(current_volume)
 		new_volume = current_volume + amount
+		print(f"volume: {current_volume} => {new_volume}")
 		self._set_volume(new_volume)
 		self._display.show_volume_set(new_volume)
 
