@@ -12,6 +12,9 @@ class MusicCast:
 	def set_volume(self, volume):
 		self._do_yxc_request(f"setVolume?volume={volume}")
 
+	def power_on(self):
+		self._do_yxc_request(f"setPower?power=on")
+
 	def _do_yxc_request(self, query):
 		self._conn.request("GET", f"/YamahaExtendedControl/v1/main/{query}")
 		res = self._conn.getresponse()

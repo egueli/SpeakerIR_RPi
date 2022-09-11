@@ -37,8 +37,16 @@ class Application:
 			self._display.show_volume(current_volume)
 			new_volume = current_volume + amount
 			print(f"volume: {current_volume} => {new_volume}")
-			self._musiccast.set_volume(new_volume)
-			self._display.show_volume_set(new_volume)
+			try:
+				self._musiccast.set_volume(new_volume)
+				self._display.show_volume_set(new_volume)
+			except YXCNonZeroResponseCodeException as e:
+				if e.code == 5:
+					# the power might be off; power on and retry
+					self._musiccast.power_on()
+					self._musiccast.set_volume(new_volume)
+					self._display.show_volume_set(new_volume)
+					
 		except YXCNonZeroResponseCodeException as e:
 			self._display.show_error(str(e.code))
 			raise e
