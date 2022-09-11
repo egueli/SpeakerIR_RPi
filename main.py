@@ -56,9 +56,6 @@ class Application:
 		self._set_volume(new_volume)
 		self._display.show_volume_set(new_volume)
 
-	def _on_vol_down(self):
-		elapsed(lambda: self._change_volume(-2))
-
 	def _on_mute(self):
 		pass
 
