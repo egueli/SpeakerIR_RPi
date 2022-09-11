@@ -1,13 +1,10 @@
 import asyncio
-import tm1637
-
-CLK = 27
-DIO = 17
+from display_hw import *
 
 class Display():
     def __init__(self):
         print("display start")
-        self._tm = tm1637.TM1637(clk=CLK, dio=DIO)
+        self._hw = DisplayHardware()
         self._current: asyncio.Task = None
         self._duration = 1.5
 
@@ -35,21 +32,12 @@ class Display():
         if self._current:
             self._current.cancel()
 
-        self._show_segments(segments)
+        self._hw.show_segments(segments)
         self._current = asyncio.create_task(self._post_blank(duration))
 
     async def _post_blank(self, duration):
         await asyncio.sleep(duration)
-        self._blank()
-
-    def _show_segments(self, segments):
-        print("display show segments")
-        self._tm.write(segments)
-
-    def _blank(self):
-        print("display blank")
-        self._tm.show('    ')
-
+        self._hw.blank()
 
 if __name__ == "__main__":
     d = Display()
