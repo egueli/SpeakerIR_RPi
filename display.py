@@ -9,10 +9,12 @@ class Display():
         self._duration = 1.5
 
     def show_welcome(self):
+        # Show "Hi" but with a lowercase I using the left segment
         self._show_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000])
 
     def show_ir(self):
-        self._show_temporary([0b00000000, 0b10000000, 0b00000000, 0b00000000])
+        # Show a dot on the rightmost display
+        self._show_temporary([0b00000000, 0b00000000, 0b00000000, 0b10000000])
         pass
 
     def show_volume(self, volume):
