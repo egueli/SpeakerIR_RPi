@@ -17,13 +17,12 @@ class Display():
 
     def show_volume(self, volume):
         self._show_temporary(self._text("%3d " % volume))
-        pass
 
     def show_volume_set(self, volume):
         pass
 
     def _text(self, text):
-        return self._tm.encode_string(text)
+        return self._hw.encode_string(text)
 
     def _show_temporary(self, segments, duration = None):
         if not duration:

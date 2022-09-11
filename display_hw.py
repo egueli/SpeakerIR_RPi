@@ -14,3 +14,6 @@ class DisplayHardware():
     def blank(self):
         print("display blank")
         self._tm.show('    ')
+
+    def encode_string(self, string):
+        return self._tm.encode_string(string)
