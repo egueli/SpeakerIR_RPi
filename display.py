@@ -13,15 +13,16 @@ class Display():
         self._show_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000])
 
     def show_ir(self):
-        # Show a dot on the rightmost display
+        # Show a dot on the rightmost digit
         self._show_temporary([0b00000000, 0b00000000, 0b00000000, 0b10000000])
-        pass
 
     def show_volume(self, volume):
         self._show_temporary(self._text("%3d " % volume))
 
     def show_volume_set(self, volume):
-        pass
+        segments = self._text("%3d " % volume)
+        segments[3] |= 128 # add dot on rightmost digit
+        self._show_temporary(segments)
 
     def show_error(self, error):
         self._hw.blank()
