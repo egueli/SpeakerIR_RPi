@@ -21,7 +21,12 @@ class Display():
     def show_volume_set(self, volume):
         pass
 
+    def show_error(self, error):
+        self._hw.blank()
+        self._show_temporary(self._text(f"E{error}"))
+
     def _text(self, text):
+        text = f"{text:>4}" # align right by adding padding spaces
         return self._hw.encode_string(text)
 
     def _show_temporary(self, segments, duration = None):

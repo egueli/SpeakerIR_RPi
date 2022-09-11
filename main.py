@@ -32,12 +32,16 @@ class Application:
 				print(traceback.format_exc())
 
 	def _change_volume(self, amount):
-		current_volume = self._musiccast.get_volume()
-		self._display.show_volume(current_volume)
-		new_volume = current_volume + amount
-		print(f"volume: {current_volume} => {new_volume}")
-		self._musiccast.set_volume(new_volume)
-		self._display.show_volume_set(new_volume)
+		try:
+			current_volume = self._musiccast.get_volume()
+			self._display.show_volume(current_volume)
+			new_volume = current_volume + amount
+			print(f"volume: {current_volume} => {new_volume}")
+			self._musiccast.set_volume(new_volume)
+			self._display.show_volume_set(new_volume)
+		except YXCNonZeroResponseCodeException as e:
+			self._display.show_error(str(e.code))
+			raise e
 
 	def _on_mute(self):
 		pass

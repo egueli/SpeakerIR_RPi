@@ -19,5 +19,10 @@ class MusicCast:
 		yxc_status = json.loads(res_body)
 		response_code = yxc_status['response_code']
 		if response_code != 0:
-			raise Exception(f"expected non-zero response code, got {response_code}")
+			raise YXCNonZeroResponseCodeException(response_code)
 		return yxc_status
+
+
+class YXCNonZeroResponseCodeException(Exception):
+    def __init__(self, code):
+        self.code = code
