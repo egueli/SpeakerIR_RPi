@@ -5,7 +5,7 @@
 import traceback
 import asyncio
 from display import Display
-import time
+from elapsed import *
 from commands import *
 from ir import *
 from musiccast import *
@@ -59,13 +59,6 @@ class Application:
 
 	def _on_blue(self):
 		pass
-
-def elapsed(func):
-	start_at = time.time()
-	func()
-	end_at = time.time()
-	duration = end_at - start_at
-	print(f"duration: {duration*1000}ms")
 
 if __name__ == "__main__":
 	print("SpeakerIR starting")
