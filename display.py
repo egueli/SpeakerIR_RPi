@@ -1,5 +1,6 @@
 import asyncio
 from display_hw import *
+from elapsed import *
 
 class Display():
     def __init__(self):
@@ -17,7 +18,7 @@ class Display():
         self._show_temporary([0b00000000, 0b00000000, 0b00000000, 0b10000000])
 
     def show_volume(self, volume):
-        self._show_temporary(self._text("%3d " % volume))
+        elapsed(lambda: self._show_temporary(self._text("%3d " % volume)))
 
     def show_volume_set(self, volume):
         segments = self._text("%3d " % volume)
@@ -39,10 +40,10 @@ class Display():
         if self._current:
             self._current.cancel()
 
-        self._hw.show_segments(segments)
-        self._current = asyncio.create_task(self._post_blank(duration))
+        self._current = asyncio.create_task(self._post_blank(segments, duration))
 
-    async def _post_blank(self, duration):
+    async def _post_blank(self, segments, duration):
+        self._hw.show_segments(segments)
         await asyncio.sleep(duration)
         self._hw.blank()
 
