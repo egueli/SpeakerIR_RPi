@@ -37,6 +37,11 @@ class Display():
         else:
             self._show_temporary(self._text("soun"))
 
+    def show_tv_input_set(self):
+        segments = self._text(" tv ")
+        segments[3] |= 128 # add dot on rightmost digit
+        self._show_temporary(segments)
+
     def show_error(self, error):
         self._hw.blank()
         self._show_temporary(self._text(f"E{error}"))

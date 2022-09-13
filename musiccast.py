@@ -23,8 +23,22 @@ class MusicCast:
 	def power_on(self):
 		self._do_yxc_zone_request(f"setPower?power=on")
 
+	def set_input(self, input):
+		self._do_yxc_zone_request(f"setInput?input={input}")
+
+	def set_speaker(self, speaker_name, enable):
+		query = "setSpeakerA" if speaker_name == "a" else "setSpeakerB" 
+		enable = "true" if enable else "false"
+		self._do_yxc_system_request(f"{query}?enable={enable}")
+
 	def _do_yxc_zone_request(self, query):
-		self._conn.request("GET", f"/YamahaExtendedControl/v1/main/{query}")
+		self._do_yxc_request(f"/YamahaExtendedControl/v1/main/{query}")
+
+	def _do_yxc_system_request(self, query):
+		self._do_yxc_request(f"/YamahaExtendedControl/v1/system/{query}")
+
+	def _do_yxc_request(self, path):
+		self._conn.request("GET", path)
 		res = self._conn.getresponse()
 		res_body = res.read()
 		yxc_status = json.loads(res_body)

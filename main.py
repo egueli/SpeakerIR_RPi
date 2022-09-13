@@ -30,6 +30,8 @@ class Application:
 					elapsed(lambda: self._change_volume(-2))
 				if isinstance(command, Mute):
 					elapsed(lambda: self._toggle_mute())
+				if isinstance(command, SetInput):
+					elapsed(lambda: self._set_input())
 			except Exception:
 				print(traceback.format_exc())
 
@@ -62,8 +64,15 @@ class Application:
 		self._musiccast.set_muted(new_is_muted)
 		self._display.show_mute_set(new_is_muted)
 
-	def _on_tv(self):
-		pass
+	def _set_input(self):
+		self._musiccast.power_on()
+		# My TV is connected to Optical1 input
+		self._musiccast.set_input("optical1")
+		# My "A" speakers are big and far from the TV, and will be off.
+		self._musiccast.set_speaker("a", False)
+		# My "B" speakers are near the TV and will be on.
+		self._musiccast.set_speaker("b", True)
+		self._display.show_tv_input_set()
 
 	def _on_blue(self):
 		pass
