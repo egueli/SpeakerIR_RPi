@@ -53,10 +53,10 @@ class Display():
         if self._current:
             self._current.cancel()
 
-        self._current = asyncio.create_task(self._post_blank(segments, duration))
-
-    async def _post_blank(self, segments, duration):
         self._hw.show_segments(segments)
+        self._current = asyncio.create_task(self._post_blank(duration))
+
+    async def _post_blank(self, duration):
         await asyncio.sleep(duration)
         self._hw.blank()
 
