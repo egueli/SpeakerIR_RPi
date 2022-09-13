@@ -32,10 +32,10 @@ class MusicCast:
 		self._do_yxc_system_request(f"{query}?enable={enable}")
 
 	def _do_yxc_zone_request(self, query):
-		self._do_yxc_request(f"/YamahaExtendedControl/v1/main/{query}")
+		return self._do_yxc_request(f"/YamahaExtendedControl/v1/main/{query}")
 
 	def _do_yxc_system_request(self, query):
-		self._do_yxc_request(f"/YamahaExtendedControl/v1/system/{query}")
+		return self._do_yxc_request(f"/YamahaExtendedControl/v1/system/{query}")
 
 	def _do_yxc_request(self, path):
 		self._conn.request("GET", path)
@@ -46,7 +46,6 @@ class MusicCast:
 		if response_code != 0:
 			raise YXCNonZeroResponseCodeException(response_code)
 		return yxc_status
-
 
 class YXCNonZeroResponseCodeException(Exception):
     def __init__(self, code):
