@@ -38,14 +38,22 @@ class MusicCast:
 		return self._do_yxc_request(f"/YamahaExtendedControl/v1/system/{query}")
 
 	def _do_yxc_request(self, path):
-		self._conn.request("GET", path)
-		res = self._conn.getresponse()
-		res_body = res.read()
-		yxc_status = json.loads(res_body)
-		response_code = yxc_status['response_code']
-		if response_code != 0:
-			raise YXCNonZeroResponseCodeException(response_code)
-		return yxc_status
+		n_repeats = 3
+		while True:
+			try:						
+				self._conn.request("GET", path)
+				res = self._conn.getresponse()
+				res_body = res.read()
+				yxc_status = json.loads(res_body)
+				response_code = yxc_status['response_code']
+				if response_code != 0:
+					raise YXCNonZeroResponseCodeException(response_code)
+				return yxc_status
+			except http.client.RemoteDisconnected as e:
+				print(f"got RemoteDisconnected, retrying ({n_repeats})")
+				n_repeats = n_repeats - 1
+				if not n_repeats:
+					raise e
 
 class YXCNonZeroResponseCodeException(Exception):
     def __init__(self, code):
