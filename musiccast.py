@@ -3,7 +3,11 @@ import json
 
 class MusicCast:
 	def __init__(self):
-		self._conn = http.client.HTTPConnection("192.168.0.106")
+		self._conn = http.client.HTTPConnection("192.168.0.106", timeout=2)
+
+	def is_on(self):
+		yxc_status = self._do_yxc_zone_request(f"getStatus")
+		return yxc_status['power'] == "on"
 
 	def get_volume(self):
 		yxc_status = self._do_yxc_zone_request(f"getStatus")

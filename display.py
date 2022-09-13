@@ -38,9 +38,18 @@ class Display():
     def show_tv_input_set(self):
         self._show_temporary(add_ok(self._text(" tv ")))
 
-    def show_error(self, error):
-        self._hw.blank()
-        self._show_temporary(self._text(f"E{error}"))
+    def show_error_invalid_state(self):
+        self._show_temporary([0b0111111, 0b01110001, 0b01110001, 0b0000000]) # "Off "
+
+    def show_error_numeric(self, code):
+        self._show_temporary(self._text(f"E{code}"))
+
+    def show_error_other(self, exception):
+        message = repr(exception)
+        code = hash(message) % 1000
+        print(f'Hashing "{message}" to fault code {code}')
+        segments = self._text(f"F{code:03}")
+        self._show_temporary(segments)
 
     def _text(self, text):
         text = f"{text:>4}" # align right by adding padding spaces

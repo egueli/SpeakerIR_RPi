@@ -32,22 +32,27 @@ class Application:
 					elapsed(lambda: self._toggle_mute())
 				if isinstance(command, SetInput):
 					elapsed(lambda: self._set_input())
-			except Exception:
+			except DeviceNotOnException:
 				print(traceback.format_exc())
+				self._display.show_error_invalid_state()
+			except YXCNonZeroResponseCodeException as e:
+				print(traceback.format_exc())
+				self._display.show_error_numeric(e.code)
+			except Exception as e:
+				print(traceback.format_exc())
+				self._display.show_error_other(e)
 
 	def _change_volume(self, amount):
-		try:
-			current_volume = self._musiccast.get_volume()
-			self._display.show_volume(current_volume)
-			new_volume = current_volume + amount
-			print(f"volume: {current_volume} => {new_volume}")
-			self._musiccast.set_volume(new_volume)
-			self._display.show_volume_set(new_volume)
-		except YXCNonZeroResponseCodeException as e:
-			self._display.show_error(str(e.code))
-			raise e
+		self._ensure_on()
+		current_volume = self._musiccast.get_volume()
+		self._display.show_volume(current_volume)
+		new_volume = current_volume + amount
+		print(f"volume: {current_volume} => {new_volume}")
+		self._musiccast.set_volume(new_volume)
+		self._display.show_volume_set(new_volume)
 
 	def _toggle_mute(self):
+		self._ensure_on()
 		is_muted = self._musiccast.get_is_muted()
 		self._display.show_mute(is_muted)
 		new_is_muted = not is_muted
@@ -67,6 +72,10 @@ class Application:
 
 	def _on_blue(self):
 		pass
+
+	def _ensure_on(self):
+		if not self._musiccast.is_on():
+			raise DeviceNotOnException()
 
 if __name__ == "__main__":
 	print("SpeakerIR starting")

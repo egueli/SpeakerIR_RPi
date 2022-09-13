@@ -15,3 +15,6 @@ class SetInput(Command):
 
 class ToggleClock(Command):
     pass
+
+class DeviceNotOnException(Exception):
+    pass
