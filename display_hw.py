@@ -10,11 +10,9 @@ class DisplayHardware():
         print("pin factory: " + str(Device._default_pin_factory()))
     
     def show_segments(self, segments):
-        print("display show segments")
         self._tm.write(segments)
 
     def blank(self):
-        print("display blank")
         self._tm.show('    ')
 
     def encode_string(self, string):

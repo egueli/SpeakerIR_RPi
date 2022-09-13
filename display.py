@@ -4,7 +4,6 @@ from elapsed import *
 
 class Display():
     def __init__(self):
-        print("display start")
         self._hw = DisplayHardware()
         self._current: asyncio.Task = None
         self._duration = 1.5
