@@ -14,8 +14,7 @@ class Display():
         self._show_temporary([0b00000000, 0b01110110, 0b00010000, 0b00000000])
 
     def show_ir(self):
-        # Show a dot on the rightmost digit
-        self._show_temporary([0b00000000, 0b00000000, 0b00000000, 0b10000000])
+        self._show_temporary(add_ok([0, 0, 0, 0]))
 
     def show_volume(self, volume):
         elapsed(lambda: self._show_temporary(self._text("%3d " % volume)))
@@ -33,14 +32,12 @@ class Display():
 
     def show_mute_set(self, muted):
         if muted:
-            self._show_temporary(self._text("nute"))
+            self._show_temporary(add_ok(self._text("nute")))
         else:
-            self._show_temporary(self._text("soun"))
+            self._show_temporary(add_ok(self._text("soun")))
 
     def show_tv_input_set(self):
-        segments = self._text(" tv ")
-        segments[3] |= 128 # add dot on rightmost digit
-        self._show_temporary(segments)
+        self._show_temporary(add_ok(self._text(" tv ")))
 
     def show_error(self, error):
         self._hw.blank()
@@ -63,6 +60,10 @@ class Display():
         self._hw.show_segments(segments)
         await asyncio.sleep(duration)
         self._hw.blank()
+
+def add_ok(segments):
+    segments[3] |= 128 # add dot on rightmost digit
+    return segments
 
 if __name__ == "__main__":
     d = Display()
