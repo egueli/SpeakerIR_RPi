@@ -25,6 +25,18 @@ class Display():
         segments[3] |= 128 # add dot on rightmost digit
         self._show_temporary(segments)
 
+    def show_mute(self, muted):
+        if muted:
+            self._show_temporary(self._text("nu  "))
+        else:
+            self._show_temporary(self._text("so  "))
+
+    def show_mute_set(self, muted):
+        if muted:
+            self._show_temporary(self._text("nute"))
+        else:
+            self._show_temporary(self._text("soun"))
+
     def show_error(self, error):
         self._hw.blank()
         self._show_temporary(self._text(f"E{error}"))

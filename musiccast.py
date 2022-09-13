@@ -12,6 +12,14 @@ class MusicCast:
 	def set_volume(self, volume):
 		self._do_yxc_request(f"setVolume?volume={volume}")
 
+	def get_is_muted(self):
+		yxc_status = self._do_yxc_request(f"getStatus")
+		return yxc_status['mute']
+
+	def set_muted(self, muted):
+		enable = "true" if muted else "false"
+		self._do_yxc_request(f"setMute?enable={enable}")
+
 	def power_on(self):
 		self._do_yxc_request(f"setPower?power=on")
 

@@ -28,6 +28,8 @@ class Application:
 					elapsed(lambda: self._change_volume(2))
 				if isinstance(command, VolumeDown):
 					elapsed(lambda: self._change_volume(-2))
+				if isinstance(command, Mute):
+					elapsed(lambda: self._toggle_mute())
 			except Exception:
 				print(traceback.format_exc())
 
@@ -46,13 +48,19 @@ class Application:
 					self._musiccast.power_on()
 					self._musiccast.set_volume(new_volume)
 					self._display.show_volume_set(new_volume)
-					
+
 		except YXCNonZeroResponseCodeException as e:
 			self._display.show_error(str(e.code))
 			raise e
 
-	def _on_mute(self):
-		pass
+	def _toggle_mute(self):
+		# TODO power on if powered off
+		is_muted = self._musiccast.get_is_muted()
+		self._display.show_mute(is_muted)
+		new_is_muted = not is_muted
+		print(f"muted: {is_muted} => {new_is_muted}")
+		self._musiccast.set_muted(new_is_muted)
+		self._display.show_mute_set(new_is_muted)
 
 	def _on_tv(self):
 		pass
