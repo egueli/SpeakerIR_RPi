@@ -1,6 +1,7 @@
 import asyncio
 from display_hw import *
 from elapsed import *
+import hashlib
 
 class Display():
     def __init__(self):
@@ -44,9 +45,9 @@ class Display():
     def show_error_numeric(self, code):
         self._show_temporary(self._text(f"E{code}"))
 
-    def show_error_other(self, exception):
-        message = repr(exception)
-        code = hash(message) % 1000
+    def show_error_other(self, exception: Exception):
+        message = f"{exception.__class__}:{exception}".encode("utf-8")
+        code = int(hashlib.md5(message).hexdigest()[:8], 16) % 1000
         print(f'Hashing "{message}" to fault code {code}')
         segments = self._text(f"F{code:03}")
         self._show_temporary(segments)
