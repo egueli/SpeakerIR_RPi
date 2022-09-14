@@ -1,4 +1,5 @@
 import asyncio
+from time import sleep
 from display_hw import *
 from elapsed import *
 import hashlib
@@ -64,8 +65,23 @@ class Display():
             self._blank()
 
     def _text(self, text):
-        text = f"{text:>4}" # align right by adding padding spaces
-        return self._hw.encode_string(text)
+        dots_pos = []
+        dotless_text = ""
+        for i in range(len(text)):
+            if text[i] == ".":
+                dots_pos.append(len(dotless_text) - 1)
+            else:
+                dotless_text += text[i]
+
+        leftpad = max(0, 4 - len(dotless_text))
+        dotless_text = " " * leftpad + dotless_text
+        dots_pos = [pos + leftpad for pos in dots_pos]
+
+        segments = self._hw.encode_string(dotless_text)
+        for dot_pos in dots_pos:
+            segments = add_dot(segments, dot_pos)
+
+        return segments
 
     def _show_temporary(self, segments, duration = None):
         if not duration:
@@ -97,4 +113,15 @@ def add_dot(segments, position):
 
 if __name__ == "__main__":
     d = Display()
-    d.show_volume(85)
+    d._hw.show_segments(d._text("0"))
+    sleep(1)
+    d._hw.show_segments(d._text("0."))
+    sleep(1)
+    d._hw.show_segments(d._text("."))
+    sleep(1)
+    d._hw.show_segments(d._text("1.2.3.4."))
+    sleep(1)
+    d._hw.show_segments(d._text("18.59"))
+    sleep(1)
+    d._hw.show_segments(d._text("-54.5"))
+    sleep(1)
