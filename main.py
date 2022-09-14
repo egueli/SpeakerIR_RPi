@@ -4,6 +4,7 @@
 
 import traceback
 import asyncio
+import time
 from display import Display
 from elapsed import *
 from commands import *
@@ -23,9 +24,13 @@ class Application:
 		self._clock.start()
 		async for command in self._ir.get_commands():
 			if not command: continue
+			delta = time.time() - command.timestamp
+			if delta > 0.5:
+				print(f"discarding {command}, too old")
+				continue
 
 			try:
-				print(repr(command))
+				print(f"=== {command}")
 				if isinstance(command, ToggleClock):
 					# This a "simple" command that will have effect immediately.
 					# So don't show the IR confirmation.

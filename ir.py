@@ -3,6 +3,7 @@ from evdev import ecodes, KeyEvent
 from commands import *
 from typing import Iterator, Optional
 import asyncio
+import time
 
 class IRCommandSource:
     def __init__(self):
@@ -22,16 +23,17 @@ class IRCommandSource:
         if not is_hold and not is_down:
             return None
 
+        timestamp = event.timestamp()
         if event.code == ecodes.KEY_VOLUMEUP:
-            return VolumeUp()
+            return VolumeUp(timestamp)
         elif event.code == ecodes.KEY_VOLUMEDOWN:
-            return VolumeDown()
+            return VolumeDown(timestamp)
         elif not is_hold and event.code == ecodes.KEY_MUTE:
-            return Mute()
+            return Mute(timestamp)
         elif not is_hold and event.code == ecodes.KEY_TV:
-            return SetInput()
+            return SetInput(timestamp)
         elif not is_hold and event.code == ecodes.KEY_BLUE:
-            return ToggleClock()
+            return ToggleClock(timestamp)
 
 async def test_run():
     ir = IRCommandSource()

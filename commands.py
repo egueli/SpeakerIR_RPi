@@ -1,20 +1,29 @@
 class Command():
-	pass
+    def __init__(self, timestamp):
+        self.timestamp = timestamp
+    
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}@{self.timestamp}"
 
 class VolumeUp(Command):
-	pass
+    def __init__(self, timestamp):
+        super().__init__(timestamp)
 
 class VolumeDown(Command):
-    pass
+    def __init__(self, timestamp):
+        super().__init__(timestamp)
 
 class Mute(Command):
-    pass
+    def __init__(self, timestamp):
+        super().__init__(timestamp)
 
 class SetInput(Command):
-    pass
+    def __init__(self, timestamp):
+        super().__init__(timestamp)
 
 class ToggleClock(Command):
-    pass
+    def __init__(self, timestamp):
+        super().__init__(timestamp)
 
 class DeviceNotOnException(Exception):
     pass
