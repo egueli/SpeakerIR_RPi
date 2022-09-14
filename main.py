@@ -9,29 +9,37 @@ from elapsed import *
 from commands import *
 from ir import *
 from musiccast import *
+from clock import *
 
 class Application:
 	def __init__(self):
 		self._display = Display()
 		self._ir = IRCommandSource()
 		self._musiccast = MusicCast()
+		self._clock = Clock(self._display)
 
 	async def run(self):
 		self._display.show_welcome()
+		self._clock.start()
 		async for command in self._ir.get_commands():
 			if not command: continue
 
 			try:
-				self._display.show_ir()
 				print(repr(command))
-				if isinstance(command, VolumeUp):
-					elapsed(lambda: self._change_volume(2))
-				if isinstance(command, VolumeDown):
-					elapsed(lambda: self._change_volume(-2))
-				if isinstance(command, Mute):
-					elapsed(lambda: self._toggle_mute())
-				if isinstance(command, SetInput):
-					elapsed(lambda: self._set_input())
+				if isinstance(command, ToggleClock):
+					# This a "simple" command that will have effect immediately.
+					# So don't show the IR confirmation.
+					self._clock.toggle()
+				else:
+					self._display.show_ir()
+					if isinstance(command, VolumeUp):
+						elapsed(lambda: self._change_volume(2))
+					elif isinstance(command, VolumeDown):
+						elapsed(lambda: self._change_volume(-2))
+					elif isinstance(command, Mute):
+						elapsed(lambda: self._toggle_mute())
+					elif isinstance(command, SetInput):
+						elapsed(lambda: self._set_input())
 			except DeviceNotOnException:
 				print(traceback.format_exc())
 				self._display.show_error_invalid_state()

@@ -52,6 +52,17 @@ class Display():
         segments = self._text(f"F{code:03}")
         self._show_temporary(segments)
 
+    def set_time(self, time):
+        if not time:
+            self._blank_segments = [0, 0, 0, 0]
+        else:            
+            h = time.tm_hour
+            m = time.tm_min
+            self._blank_segments = add_dot(self._text(f"{h:2}{m:02}"), 1)
+        
+        if self._current is None:
+            self._blank()
+
     def _text(self, text):
         text = f"{text:>4}" # align right by adding padding spaces
         return self._hw.encode_string(text)
@@ -62,6 +73,7 @@ class Display():
             
         if self._current:
             self._current.cancel()
+            self._current = None
 
         self._hw.show_segments(segments)
         self._current = asyncio.create_task(self._post_blank(duration))
@@ -69,6 +81,7 @@ class Display():
     async def _post_blank(self, duration):
         await asyncio.sleep(duration)
         self._blank()
+        self._current = None
 
     def _blank(self):
         self._hw.show_segments(self._blank_segments)
