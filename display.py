@@ -20,8 +20,7 @@ class Display():
         elapsed(lambda: self._show_temporary(self._text("%3d " % volume)))
 
     def show_volume_set(self, volume):
-        segments = self._text("%3d " % volume)
-        segments[3] |= 128 # add dot on rightmost digit
+        segments = add_ok(self._text("%3d " % volume))
         self._show_temporary(segments)
 
     def show_mute(self, muted):
@@ -71,7 +70,10 @@ class Display():
         self._hw.blank()
 
 def add_ok(segments):
-    segments[3] |= 128 # add dot on rightmost digit
+    return add_dot(segments, 3)
+
+def add_dot(segments, position):
+    segments[position] |= 128
     return segments
 
 if __name__ == "__main__":
