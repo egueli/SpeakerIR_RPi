@@ -8,6 +8,7 @@ class Display():
         self._hw = DisplayHardware()
         self._current: asyncio.Task = None
         self._duration = 1.5
+        self._blank_segments = [0, 0, 0, 0]
 
     def show_welcome(self):
         # Show "Hi" but with a lowercase I using the left segment
@@ -67,7 +68,10 @@ class Display():
 
     async def _post_blank(self, duration):
         await asyncio.sleep(duration)
-        self._hw.blank()
+        self._blank()
+
+    def _blank(self):
+        self._hw.show_segments(self._blank_segments)
 
 def add_ok(segments):
     return add_dot(segments, 3)

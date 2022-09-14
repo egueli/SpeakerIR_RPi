@@ -12,8 +12,5 @@ class DisplayHardware():
     def show_segments(self, segments):
         self._tm.write(segments)
 
-    def blank(self):
-        self._tm.show('    ')
-
     def encode_string(self, string):
         return self._tm.encode_string(string)
