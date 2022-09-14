@@ -2,6 +2,9 @@ import http.client
 import json
 
 class MusicCast:
+	def __init__(self):
+		self._conn = None
+
 	def is_on(self):
 		yxc_status = self._do_yxc_zone_request(f"getStatus")
 		return yxc_status['power'] == "on"
@@ -39,26 +42,33 @@ class MusicCast:
 		return self._do_yxc_request(f"/YamahaExtendedControl/v1/system/{query}")
 
 	def _do_yxc_request(self, path):
-		conn = http.client.HTTPConnection("192.168.0.106", timeout=2)
-		try:
-			n_repeats = 3
-			while True:
-				try:						
-					conn.request("GET", path)
-					res = conn.getresponse()
-					res_body = res.read()
-					yxc_status = json.loads(res_body)
-					response_code = yxc_status['response_code']
-					if response_code != 0:
-						raise YXCNonZeroResponseCodeException(response_code)
-					return yxc_status
-				except http.client.RemoteDisconnected as e:
-					print(f"got RemoteDisconnected, retrying ({n_repeats})")
-					n_repeats = n_repeats - 1
-					if not n_repeats:
-						raise e
-		finally:
-			conn.close()
+		n_repeats = 3
+		while True:
+			try:						
+				self._get_conn().request("GET", path)
+				res = self._get_conn().getresponse()
+				res_body = res.read()
+				yxc_status = json.loads(res_body)
+				response_code = yxc_status['response_code']
+				if response_code != 0:
+					raise YXCNonZeroResponseCodeException(response_code)
+				return yxc_status
+			except http.client.HTTPException as e:
+				print(f"got {e}, retrying ({n_repeats})")
+				self._forget_conn()
+				n_repeats = n_repeats - 1
+				if not n_repeats:
+					raise e
+	
+	def _get_conn(self):
+		if self._conn is None:
+			self._conn = http.client.HTTPConnection("192.168.0.106", timeout=2)
+		
+		return self._conn
+
+	def _forget_conn(self):
+		self._conn = None
+
 
 class YXCNonZeroResponseCodeException(Exception):
     def __init__(self, code):
