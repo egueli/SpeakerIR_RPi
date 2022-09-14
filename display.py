@@ -76,6 +76,7 @@ class Display():
             self._current = None
 
         self._hw.show_segments(segments)
+        self._hw.bright()
         self._current = asyncio.create_task(self._post_blank(duration))
 
     async def _post_blank(self, duration):
@@ -84,6 +85,7 @@ class Display():
         self._current = None
 
     def _blank(self):
+        self._hw.dim()
         self._hw.show_segments(self._blank_segments)
 
 def add_ok(segments):
