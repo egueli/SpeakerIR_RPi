@@ -62,7 +62,7 @@ class MusicCast:
 	
 	def _get_conn(self):
 		if self._conn is None:
-			self._conn = http.client.HTTPConnection("192.168.0.106", timeout=2)
+			self._conn = http.client.HTTPConnection("192.168.0.106", timeout=1)
 		
 		return self._conn
 
