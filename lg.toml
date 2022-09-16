@@ -1,0 +1,11 @@
+[[protocols]]
+name = "LG TV"
+protocol = "nec"
+variant = "necx"
+
+[protocols.scancodes]
+0x402 = "KEY_VOLUMEUP"
+0x403 = "KEY_VOLUMEDOWN"
+0x409 = "KEY_MUTE"
+0x4f0 = "KEY_TV"
+0x461 = "KEY_BLUE"
