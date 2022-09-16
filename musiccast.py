@@ -11,9 +11,10 @@ class MusicCast:
 
 	def get_volume(self):
 		yxc_status = self._do_yxc_zone_request(f"getStatus")
-		return yxc_status['volume']
+		return _vol_n_to_db(yxc_status['volume'])
 
-	def set_volume(self, volume):
+	def set_volume(self, volume_in_db):
+		volume = _vol_db_to_n(volume_in_db)
 		self._do_yxc_zone_request(f"setVolume?volume={volume}")
 
 	def get_is_muted(self):
@@ -69,7 +70,12 @@ class MusicCast:
 	def _forget_conn(self):
 		self._conn = None
 
-
 class YXCNonZeroResponseCodeException(Exception):
     def __init__(self, code):
         self.code = code
+
+def _vol_n_to_db(n):
+	return (float(n) - 161) / 2
+
+def _vol_db_to_n(db):
+	return int((db * 2) + 161)

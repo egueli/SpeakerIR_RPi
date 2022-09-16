@@ -19,10 +19,10 @@ class Display():
         self._show_temporary(add_ok([0, 0, 0, 0]))
 
     def show_volume(self, volume):
-        elapsed(lambda: self._show_temporary(self._text("%3d " % volume)))
+        elapsed(lambda: self._show_temporary(self._text(f"{volume:.1f}")))
 
     def show_volume_set(self, volume):
-        segments = add_ok(self._text("%3d " % volume))
+        segments = add_ok(self._text(f"{volume:.1f}"))
         self._show_temporary(segments)
 
     def show_mute(self, muted):

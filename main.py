@@ -38,9 +38,9 @@ class Application:
 				else:
 					self._display.show_ir()
 					if isinstance(command, VolumeUp):
-						elapsed(lambda: self._change_volume(2))
+						elapsed(lambda: self._change_volume(1))
 					elif isinstance(command, VolumeDown):
-						elapsed(lambda: self._change_volume(-2))
+						elapsed(lambda: self._change_volume(-1))
 					elif isinstance(command, Mute):
 						elapsed(lambda: self._toggle_mute())
 					elif isinstance(command, SetInput):
