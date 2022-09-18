@@ -1,8 +1,8 @@
 import tm1637
 from gpiozero import Device
 
-CLK = 27
-DIO = 17
+CLK = 3
+DIO = 2
 
 BRIGHT = 7
 DIM = 2

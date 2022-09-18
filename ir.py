@@ -7,7 +7,7 @@ import time
 
 class IRCommandSource:
     def __init__(self):
-        self._device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@18-event')
+        self._device = evdev.InputDevice('/dev/input/by-path/platform-ir-receiver@4-event')
 
     async def get_commands(self) -> Iterator[Command]:
         async for event in self._device.async_read_loop():

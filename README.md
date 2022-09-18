@@ -1,3 +1,13 @@
+# Configuring IR reception on Raspberry Pi
+
+Uncomment/add the following line in `/boot/config.txt`:
+
+    dtoverlay=gpio-ir,gpio_pin=4
+
+(feel free to replace 4 with your desired GPIO pin number)
+
+After a reboot, 
+
 # Creating IR scancodes file
 
     sudo ir-keytable -p all -t
