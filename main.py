@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # Run setup_ir.sh with root priviledges before running this.
 
