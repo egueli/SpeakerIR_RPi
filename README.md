@@ -1,4 +1,6 @@
-# Configuring IR reception on Raspberry Pi
+# Setup
+
+## Configuring IR reception on Raspberry Pi
 
 Uncomment/add the following line in `/boot/config.txt`:
 
@@ -8,11 +10,21 @@ Uncomment/add the following line in `/boot/config.txt`:
 
 After a reboot, the system should have a file/symlink at `/dev/input/by-path/platform-ir-receiver@4-event`.
 
-# Creating IR scancodes file
+## Install Python packages
+
+    pip3 install gpiozero RPi.GPIO evdev
+
+* On some systems, `evdev` cannot be installed via pip: it needs compilation on device, which may not be easy to do e.g. in OSMC. In this case, use the OS package manager e.g. `sudo apt install python3-evdev`.
+
+## Creating IR scancodes file
 
     sudo ir-keytable -p all -t
 
 Press the five buttons on your IR remote, then write the respective IR codes and protocols into a `.toml` file. See [acer.toml] and [lg.toml] for examples.
+
+# Run
+
+    ./main.py
 
 # Random notes
 

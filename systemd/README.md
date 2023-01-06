@@ -1,6 +1,8 @@
-Copy these files to start SpeakerIR at boot:
+1. Copy these files to start SpeakerIR at boot:
 
     sudo cp -av *.service /lib/systemd/system
+
+2. Edit `/lib/systemd/system/irsetup.service` and `/lib/systemd/system/speakerir.service` to use the actual scripts location instead of `/home/enrico/app`.
 
 Then, enable both services:
 
