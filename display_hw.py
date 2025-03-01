@@ -1,8 +1,8 @@
 import tm1637
 from gpiozero import Device
 
-CLK = 3
-DIO = 2
+CLK = "GPIO1"
+DIO = "GPIO0"
 
 BRIGHT = 7
 DIM = 2
