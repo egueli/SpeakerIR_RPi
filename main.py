@@ -22,6 +22,7 @@ class Application:
 	async def run(self):
 		self._display.show_welcome()
 		self._clock.start()
+		self._clock.toggle()
 		async for command in self._ir.get_commands():
 			if not command: continue
 			delta = time.time() - command.timestamp
