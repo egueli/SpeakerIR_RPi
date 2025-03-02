@@ -1,3 +1,5 @@
+1. Ensure venv has been setup in `.venv`.
+
 1. Copy these files to start SpeakerIR at boot:
 
     sudo cp -av *.service /lib/systemd/system

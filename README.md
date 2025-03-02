@@ -1,6 +1,6 @@
 # Setup
 
-## Configuring IR reception on Raspberry Pi
+## Configure IR reception on Raspberry Pi
 
 Uncomment/add the following line in `/boot/config.txt`:
 
@@ -10,8 +10,10 @@ Uncomment/add the following line in `/boot/config.txt`:
 
 After a reboot, the system should have a file/symlink at `/dev/input/by-path/platform-ir-receiver@4-event`.
 
-## Install required Python packages
+## Setup venv required Python packages
 
+    python3 -m venv .venv
+    . .venv/bin/activate
     pip3 install gpiozero RPi.GPIO evdev
 
 ## Create IR scancodes file
@@ -34,7 +36,13 @@ Some notes regarding OSMC:
 
 # Run
 
+From inside venv:
+
     ./main.py
+
+Or outside:
+
+    .venv/bin/python3 main.py
 
 # Random notes
 
