@@ -44,6 +44,10 @@ Or outside:
 
     .venv/bin/python3 main.py
 
+# Run at system startup (Raspbian)
+
+    sudo ./systemd_install.sh
+
 # Random notes
 
 The `tm1637.py` file is copied from https://github.com/SimonStJG/raspberrypi-tm1637/tree/master.
