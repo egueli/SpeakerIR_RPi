@@ -81,6 +81,7 @@ ExecStart=${SCRIPT_DIR}/.venv/bin/python3 main.py
 WorkingDirectory=${SCRIPT_DIR}
 User=${USERNAME}
 Group=${USERNAME}
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
