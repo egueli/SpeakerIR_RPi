@@ -1,8 +1,8 @@
 
 #!/bin/bash
 
-# Configures the system so that it starts setup_ir.sh as root, followed by
-# main.py as non-root user.
+# Configures the system so that it starts setup_ir.sh as root, then main.py as
+# non-root user when the evdev input device is ready.
 # Because it changes the system configuration, the script itself must be run as
 # root.
 
@@ -57,21 +57,17 @@ cat <<EOF > /lib/systemd/system/irsetup.service
 [Unit]
 Description=SpeakerIR Remote Control Setup
 After=basic.target
-After=network-online.target
 
 [Service]
 Type=oneshot
 ExecStart=${SCRIPT_DIR}/setup_ir.sh
 WorkingDirectory=${SCRIPT_DIR}
-
-[Install]
-WantedBy=multi-user.target
 EOF
 
 cat <<EOF > /lib/systemd/system/speakerir.service
 [Unit]
 Description=SpeakerIR main application
-After=basic.target
+After=network-online.target
 Requires=irsetup.service
 After=irsetup.service
 
@@ -82,10 +78,15 @@ WorkingDirectory=${SCRIPT_DIR}
 User=${USERNAME}
 Group=${USERNAME}
 Restart=always
-
-[Install]
-WantedBy=multi-user.target
 EOF
 
-systemctl enable irsetup.service speakerir.service
 systemctl daemon-reload
+
+# Tweak the udev rules so that the service is started when /dev/input/event* is ready.
+
+cat <<EOF > /etc/udev/rules.d/99-speakerir.rules
+ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", RUN+="/bin/sh -c 'sleep 2; systemctl start speakerir.service'"
+EOF
+
+sudo udevadm control --reload-rules
+sudo udevadm trigger

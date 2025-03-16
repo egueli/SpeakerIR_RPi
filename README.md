@@ -52,3 +52,9 @@ Or outside:
 
 The `tm1637.py` file is copied from https://github.com/SimonStJG/raspberrypi-tm1637/tree/master. Why use that version instead of [the original tm1637 library](https://pypi.org/project/raspberrypi-tm1637/)? Because for some reason, the underlying wiringpi library conflicts with GPIOs when used as input devices (evdev), while the gpiozero library used by that version doesn't cause any conflict.
 
+To make SpeakerIR at boot, one might want the systemd service to start at boot
+i.e. with `WantedBy=multi-user.target`. Alas, this may not work because the
+kernel event subsystem may take some time to initialize completely; if the
+service starts before then, it won't receive any event. The solution is to
+trigger the service start with a `udev` rule; `systemd_install.sh` adds a rule
+that does exactly that.
