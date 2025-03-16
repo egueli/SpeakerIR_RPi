@@ -46,7 +46,7 @@ Or outside:
 
 # Run at system startup (Raspbian)
 
-    sudo ./systemd_install.sh
+    sudo ./systemd_install.sh $USER
 
 # Random notes
 
